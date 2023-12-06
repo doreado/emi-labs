@@ -20,6 +20,6 @@ int main(int argc, char *argv[]) {
         printf("[error] reading command line arguments\n");
         return -1;
     }
-    psm_print(psm);
+    // psm_print(psm);
 	dpm_simulate(psm, sel_policy, tparams, hparams, fwl);
 }

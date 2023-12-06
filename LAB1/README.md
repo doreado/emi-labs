@@ -1,3 +1,10 @@
+# How to run the code
+```
+cd dpm-simulator/
+make
+./dpm-simulator.sh 
+```
+
 # TODO
 ## Assignment 1
 ### Part 1 - Default Timeout Policy

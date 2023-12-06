@@ -114,21 +114,22 @@ int dpm_simulate(psm_t psm, dpm_policy_t sel_policy, dpm_timeout_params
     }
     free(work_queue);
 
-    printf("[sim] Active time in profile = %.6lfs \n", t_active_ideal * PSM_TIME_UNIT);
-    printf("[sim] Inactive time in profile = %.6lfs\n", t_inactive_ideal * PSM_TIME_UNIT);
-    printf("[sim] Tot. Time w/o DPM = %.6lfs, Tot. Time w DPM = %.6lfs\n",
-           t_total_no_dpm * PSM_TIME_UNIT, t_curr * PSM_TIME_UNIT);
-    for(int i = 0; i < PSM_N_STATES; i++) {
-        printf("[sim] Total time in state %s = %.6lfs\n", PSM_STATE_NAME(i),
-                t_state[i] * PSM_TIME_UNIT);
-    }
-    printf("[sim] Timeout waiting time = %.6lfs\n", t_waiting * PSM_TIME_UNIT);
-    printf("[sim] Transitions time = %.6lfs\n", t_tran_total * PSM_TIME_UNIT);
-    printf("[sim] N. of transitions = %d\n", n_tran_total);
-    printf("[sim] Energy for transitions = %.10fJ\n", e_tran_total * PSM_ENERGY_UNIT);
-    printf("[sim] Tot. Energy w/o DPM = %.10fJ, Tot. Energy w DPM = %.10fJ\n",
-            e_total_no_dpm * PSM_ENERGY_UNIT, e_total * PSM_ENERGY_UNIT);
-	return 1;
+    printf("active,inactive,run_time,idle_time,sleep_time,timeout_waiting_time,total_time,transitions_number,transitions_time,transition_energy,total_energy\n");
+    printf("%.6lf,%.6lf,%.6lf,%.6lf,%.6lf,%.6lf,%.6lf,%d,%.6lf,%.10f,%.10f\n",
+           t_active_ideal * PSM_TIME_UNIT,    // active
+           t_inactive_ideal * PSM_TIME_UNIT,  // inactive
+           t_state[0] * PSM_TIME_UNIT,        // run time 
+           t_state[1] * PSM_TIME_UNIT,        // idle time
+           t_state[2] * PSM_TIME_UNIT,        // sleep time 
+           t_waiting * PSM_TIME_UNIT,         // timeout waiting time
+           t_curr * PSM_TIME_UNIT,            // total time
+           n_tran_total,                      // number of transitions
+           t_tran_total * PSM_TIME_UNIT,      // transitions time
+           e_tran_total * PSM_ENERGY_UNIT,    // transitions energy
+           e_total * PSM_ENERGY_UNIT          // total energy
+    );
+
+  return 1;
 }
 
 /* decide next power state */
