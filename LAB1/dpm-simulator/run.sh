@@ -11,4 +11,4 @@ for i in {0..10};
 do
     cmd $i
     echo -e "\n"
-done
+done > result.txt
