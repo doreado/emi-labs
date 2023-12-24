@@ -1,14 +1,21 @@
 #!/usr/bin/env sh
 
+init=0
 
 cmd () {
-    ./dpm_simulator -psm example/psm.txt -wl example/workload_1.txt -t $1 \
-    | grep -i 'tot\.' \
-    | cut  -f 7,13 -d ' '
+    echo -n "$2,"
+    ./dpm_simulator -psm example/psm.txt -wl example/workload_$1.txt -t $2
 }
 
-for i in {0..10};
+if [ $# -lt 2 ]; then
+    echo "Usage: ./run.sh workload_number max_timeout"
+    echo "The script simulates the workload_number 0 and max_timeout"
+    exit 1
+fi;
+
+echo -e "timeout,active,inactive,run_time,idle_time,sleep_time,timeout_waiting_time,total_time,transitions_number,transitions_time,transition_energy,total_energy\n"
+
+for i in $(seq 0 "$3" "$2");
 do
-    cmd $i
-    echo -e "\n"
-done > result.txt
+    cmd "$1" "$i"
+done > result"$1"_"$2"_"$3".txt
