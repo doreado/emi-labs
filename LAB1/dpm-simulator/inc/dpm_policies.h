@@ -45,6 +45,7 @@ typedef int dpm_policy_t;
 typedef struct {
     /* Day2: you can add/change stuff here */
     psm_time_t timeout;
+    psm_state_t low_power_state;
 } dpm_timeout_params;
 
 /**
