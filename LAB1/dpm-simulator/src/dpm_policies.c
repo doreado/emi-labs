@@ -114,8 +114,7 @@ int dpm_simulate(psm_t psm, dpm_policy_t sel_policy, dpm_timeout_params
     }
     free(work_queue);
 
-    printf("active,inactive,run_time,idle_time,sleep_time,timeout_waiting_time,total_time,transitions_number,transitions_time,transition_energy,total_energy\n");
-    printf("%.6lf,%.6lf,%.6lf,%.6lf,%.6lf,%.6lf,%.6lf,%d,%.6lf,%.10f,%.10f\n",
+    printf("%.6lf,%.6lf,%.6lf,%.6lf,%.6lf,%.6lf,%.6lf,%d,%.6lf,%.10f,%.10f,%.10f\n",
            t_active_ideal * PSM_TIME_UNIT,    // active
            t_inactive_ideal * PSM_TIME_UNIT,  // inactive
            t_state[0] * PSM_TIME_UNIT,        // run time 
@@ -126,7 +125,8 @@ int dpm_simulate(psm_t psm, dpm_policy_t sel_policy, dpm_timeout_params
            n_tran_total,                      // number of transitions
            t_tran_total * PSM_TIME_UNIT,      // transitions time
            e_tran_total * PSM_ENERGY_UNIT,    // transitions energy
-           e_total * PSM_ENERGY_UNIT          // total energy
+           e_total * PSM_ENERGY_UNIT,         // total energy
+           e_total_no_dpm * PSM_ENERGY_UNIT   // total energy no dpm
     );
 
   return 1;
