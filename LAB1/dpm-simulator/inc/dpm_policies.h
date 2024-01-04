@@ -132,4 +132,6 @@ void dpm_init_history(psm_time_t *h);
  */
 void dpm_update_history(psm_time_t *h, psm_time_t new_inactive);
 
+psm_time_t get_prediction(dpm_history_params hparams, psm_time_t *h);
+
 #endif

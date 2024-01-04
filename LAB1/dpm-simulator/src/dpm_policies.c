@@ -85,6 +85,19 @@ int dpm_simulate(psm_t psm, dpm_policy_t sel_policy, dpm_timeout_params
             }
             prev_state = curr_state;
         }
+
+#ifdef DEBUG
+printf("[debug]: prediction %.6lf\n", get_prediction(hparams, history));
+printf("[debug]: curr_state = %d\n", curr_state);
+printf("[debug]: history ");
+printf("[debug]: inactive time: %.6lf,", t_curr - t_inactive_start);
+for (int i = 0; i < DPM_HIST_WIND_SIZE - 1; i++) {
+    printf("%.6lf ", history[i]);
+}
+printf("\n");
+getchar();
+#endif
+
         // update history based on last inactive time (this can be placed elsewhere depending on your policy)
         dpm_update_history(history, t_curr - t_inactive_start);
 
@@ -137,6 +150,8 @@ int dpm_decide_state(psm_state_t *next_state, psm_state_t prev_state, psm_time_t
         psm_time_t t_inactive_start, psm_time_t *history, dpm_policy_t policy,
         dpm_timeout_params tparams, dpm_history_params hparams)
 {
+    psm_time_t prediction;
+
     switch (policy) {
 
         case DPM_TIMEOUT:
@@ -150,9 +165,36 @@ int dpm_decide_state(psm_state_t *next_state, psm_state_t prev_state, psm_time_t
 
         case DPM_HISTORY:
             /* Day 3: EDIT */
-            *next_state = PSM_STATE_RUN;
-            break;
+            prediction = get_prediction(hparams, history);
 
+            switch (prev_state) {
+                case PSM_STATE_RUN:
+                    if (prediction > hparams.threshold[1]) {
+#ifdef DEBUG
+printf("[debug]: going SLEEP\n");
+#endif
+                        *next_state = PSM_STATE_SLEEP;
+                    } else if (prediction > hparams.threshold[0]) {
+#ifdef DEBUG
+printf("[debug]: going IDLE\n");
+#endif
+                        *next_state = PSM_STATE_IDLE;
+                    }
+                    break;
+                case PSM_STATE_IDLE:
+                    if (prediction > hparams.threshold[0]) {
+                        *next_state = PSM_STATE_IDLE;
+                    }
+                    break;
+                case PSM_STATE_SLEEP:
+                    if (prediction > hparams.threshold[1]) {
+                        *next_state = PSM_STATE_SLEEP;
+                    }
+                    break;
+                default:
+                    *next_state = PSM_STATE_RUN; break;
+                }
+            break;
         default:
             printf("[error] unsupported policy\n");
             return 0;
@@ -175,6 +217,16 @@ void dpm_update_history(psm_time_t *h, psm_time_t new_inactive)
 		h[i] = h[i+1];
 	}
 	h[DPM_HIST_WIND_SIZE-1] = new_inactive;
+}
+
+psm_time_t get_prediction(dpm_history_params hparams, psm_time_t *h)
+{
+    double acc = hparams.alpha[0];
+    for (int i = 1; i < DPM_HIST_WIND_SIZE - 1; i++) {
+        acc += (double)h[DPM_HIST_WIND_SIZE - i] * hparams.alpha[i];
+    }
+
+    return acc;
 }
 
 /* initialize work queue */
