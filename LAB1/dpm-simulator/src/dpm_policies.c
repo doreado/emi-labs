@@ -87,14 +87,17 @@ int dpm_simulate(psm_t psm, dpm_policy_t sel_policy, dpm_timeout_params
         }
 
 #ifdef DEBUG
-printf("[debug]: prediction %.6lf\n", get_prediction(hparams, history));
 printf("[debug]: curr_state = %d\n", curr_state);
+printf("[debug]: prediction %.6lf\n", get_prediction(hparams, history));
+printf("[debug]: inactive time: %.6lf\n", t_curr - t_inactive_start);
 printf("[debug]: history ");
-printf("[debug]: inactive time: %.6lf,", t_curr - t_inactive_start);
 for (int i = 0; i < DPM_HIST_WIND_SIZE - 1; i++) {
-    printf("%.6lf ", history[i]);
+            printf("%.6lf ", history[i]);
 }
 printf("\n");
+printf("[debug]: |prediction - inactive time| = %.6lf\n",
+       (double)abs(get_prediction(hparams, history) -
+                   (t_curr - t_inactive_start)));
 getchar();
 #endif
 
