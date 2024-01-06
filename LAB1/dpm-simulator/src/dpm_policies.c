@@ -170,6 +170,7 @@ int dpm_decide_state(psm_state_t *next_state, psm_state_t prev_state, psm_time_t
             /* Day 3: EDIT */
             prediction = get_prediction(hparams, history);
 
+            *next_state = PSM_STATE_RUN;
             switch (prev_state) {
                 case PSM_STATE_RUN:
                     if (prediction > hparams.threshold[1]) {
