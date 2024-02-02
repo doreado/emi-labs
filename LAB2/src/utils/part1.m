@@ -21,21 +21,21 @@ hungry_blue_saved = [];
 hungry_blue_eucl = [];
 hungry_blue_perc = [];
 
-
+count = 1;
 for k=1:length(files)
    fileNames = files(k).name;
-   if strcmp(fileNames,".") | strcmp(fileNames,"..") 
+   if strcmp(fileNames,".") || strcmp(fileNames,"..") 
         continue;
    end
    tmp = imread(path+fileNames);
    [rows, cols, chans] = size(tmp);
    if chans < 3
        continue;
-   end; 
-   original_images{k} = tmp;
+   end
+   original_images{count} = tmp;
    %% figure, imshow(original_images{k});
-   original_power{k} = power_consumption(original_images{k});
-   
+   original_power{count} = power_consumption(original_images{count});
+   count = count + 1;
 end
 
 %% Histogram equalization
