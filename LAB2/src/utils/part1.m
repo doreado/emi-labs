@@ -48,8 +48,9 @@ for i=1:length(original_images)
 end
 
 %% Hungry blue
+reduction = 20;
 for i=1:length(original_images)
-    hungry_blue_images{i} = hungry_blue(original_images{i});
+    hungry_blue_images{i} = hungry_blue(original_images{i}, reduction);
     hungry_blue_images_power{i} = power_consumption(hungry_blue_images{i});
     hungry_blue__power_saved{i} = power_saved(original_images{i},hungry_blue_images{i});
     [hungry_blue_eucl{i},hist_eq_perc{i}] = distortion(original_images{i},hhungry_blue_images{i});
