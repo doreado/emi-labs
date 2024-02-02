@@ -5,4 +5,4 @@ function h_eq_image = histogram_equalization(image)
     value = histeq(temp);
     HSV_image_mod = HSV_image;
     HSV_image_mod(:, :, 3) = value;
-    h_eq_image = hsv2rgb(HSV_image_mod);
+    h_eq_image = im2uint8(hsv2rgb(HSV_image_mod));
