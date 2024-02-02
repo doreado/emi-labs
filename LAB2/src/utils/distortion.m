@@ -9,6 +9,6 @@ function [eucl,perc] = distortion(original,mod)
         end
     end
 
-    perc = ( eucl / (size(original)*size(mod)*sqrt(100^2 + 255^2 + 255^2)) )*100;
+    perc = ( eucl / (dimensions(1)*dimensions(2)*sqrt(100^2 + 255^2 + 255^2)) )*100;
 
 end
