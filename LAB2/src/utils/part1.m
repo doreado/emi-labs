@@ -43,8 +43,8 @@ for i=1:length(original_images)
     hist_eq_images{i} = histogram_equalization(original_images{i});
     %% evaluate metrics
     hist_eq_power{i} = power_consumption(hist_eq_images{i});
-    hist_eq_power_saved{i} = power_saved(original_images{i},hist_eq_images{i});
-    [hist_eq_eucl{i},hist_eq_perc{i}] = distortion(original_images_lab{i},hist_eq_images_lab{i});
+    hist_eq_power_saved{i} = power_saved(original_power{i},hist_eq_power{i});
+    [hist_eq_eucl{i},hist_eq_perc{i}] = distortion(original_images{i},hist_eq_images{i});
 end
 
 %% Hungry blue
@@ -52,7 +52,7 @@ for i=1:length(original_images)
     hungry_blue_images{i} = hungry_blue(original_images{i});
     hungry_blue_images_power{i} = power_consumption(hungry_blue_images{i});
     hungry_blue__power_saved{i} = power_saved(original_images{i},hungry_blue_images{i});
-    [hungry_blue_eucl{i},hist_eq_perc{i}] = distortion(original_images_lab{i},hhungry_blue_images_lab{i});
+    [hungry_blue_eucl{i},hist_eq_perc{i}] = distortion(original_images{i},hhungry_blue_images{i});
 end
 
 
