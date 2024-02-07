@@ -42,7 +42,7 @@ end
 he_plots(he_power_saved, 'Power Saved', 'Power Saved vs Image');
 he_plots(he_perc, 'Distortion', 'Distortion vs Image');
 % he_pareto_plots(he_power_saved, he_perc);
-he_histograms(he_power_saved, he_perc);
+he_histograms(he_power_saved, he_perc, 14);
 
 %% Hungry blue
 steps = 10;
@@ -69,8 +69,11 @@ hb_plots(14, hb_perc, 'Image #', 'Distortion (%)', 'Distortion (%) w/ different 
 %% Power vs Dist. Each curve corresponds to a different image 
 hb_ratio = zeros(size(hb_power_saved));
 
+%%pareto for hb
 pareto_plots(14, hb_power_saved, hb_perc);
-%%
+
+%%comparison images original,he
+he_comparison(original_images{1},he_images{1});
 
 function he_plots(y, y_label_str, title_str)
   figure;
@@ -204,4 +207,24 @@ function he_histograms(collection_power_savings, eucl, num_images)
 
   %saveas(gcf, "./Results/HistEqualization/bmp/EnergySavingsPerImage.bmp");
   %saveas(gcf, "./Results/HistEqualization/svg/EnergySavingsPerImage.svg");
+end
+
+%% 2 photos and histograms
+function he_comparison(original_image,he_image)
+figure 
+            subplot(2, 2, 1);
+            imshow(original_image);
+            title("Comparison Histogram Equalization");
+            subplot(2, 2, 2);
+            imhist(original_image, 64);
+
+            subplot(2, 2, 3)
+            imshow(he_image)
+            subplot(2, 2, 4)
+            imhist(he_image, 64)
+
+            %%saveas(gcf, "./Results/HistEqualization/bmp/hist_equalization_COLOR_img_" + int2str(index) + ".bmp");
+            %%saveas(gcf, "./Results/HistEqualization/svg/hist_equalization_COLOR_img_" + int2str(index) + ".svg");
+
+  
 end
