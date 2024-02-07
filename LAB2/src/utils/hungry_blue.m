@@ -1,5 +1,4 @@
 function hb_image = hungry_blue(image,reduction_perc)
-    hb_image = image;
     dimensions = size(image);
     for i = 1:dimensions(1)
         for j = 1:dimensions(2)

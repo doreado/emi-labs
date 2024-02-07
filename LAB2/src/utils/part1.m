@@ -43,6 +43,8 @@ he_plots(he_power_saved, 'Power Saved', 'Power Saved vs Image');
 he_plots(he_perc, 'Distortion', 'Distortion vs Image');
 % he_pareto_plots(he_power_saved, he_perc);
 he_histograms(he_power_saved, he_perc, 14);
+%%comparison images original,he
+he_comparison(original_images{1},he_images{1});
 
 %% Hungry blue
 steps = 10;
@@ -59,22 +61,39 @@ for k=1:steps
       [hb_eucl(1, i, k), hb_perc(1, i, k)] = distortion(original_images{i},hb_images{i}{k});
   end
 end
-
 % Power vs Images, for each color reduction
 hb_plots(14, hb_power_saved, 'Image #', 'Power Savings w.r.t. Original Image -- (%)', 'Power Savings w/ different Color Reduction intensity');
-
 % Dist vs Images, for each color reduction
 hb_plots(14, hb_perc, 'Image #', 'Distortion (%)', 'Distortion (%) w/ different Color Reduction intensity');
-
-%% Power vs Dist. Each curve corresponds to a different image 
-hb_ratio = zeros(size(hb_power_saved));
-
-%%pareto for hb
+%% pareto for hb
 pareto_plots(14, hb_power_saved, hb_perc);
 
-%%comparison images original,he
-he_comparison(original_images{1},he_images{1});
 
+%% brightness reduction (V)
+
+br_images = cell([1, 14, steps]);
+br_power = zeros([1, 14, steps]);
+br_power_saved = zeros([1, 14, steps]);
+br_eucl = zeros([1, 14, steps]);
+br_perc = zeros([1, 14, steps]);
+steps = 10;
+for k=1:steps
+    for i=1:length(original_images)
+        br_images{i}{k} = brightness_reduction(original_images{i}, k*steps);
+        br_power(1, i, k) = power_consumption(br_images{i}{k});
+        br_power_saved(1, i, k) = power_saved(original_power(i),br_power(1, i, k));
+        [br_eucl(1, i, k), br_perc(1, i, k)] = distortion(original_images{i},br_images{i}{k});
+    end
+end
+
+% Power vs Images, for each color reduction
+br_plots(14, br_power_saved, 'Image #', 'Power Savings w.r.t. Original Image -- (%)', 'Power Savings w/ different Brightness Reduction intensity');
+% Dist vs Images, for each color reduction
+br_plots(14, br_perc, 'Image #', 'Distortion (%)', 'Distortion (%) w/ different Brightness Reduction intensity');
+% pareto for hb
+pareto_plots(14, br_power_saved, br_perc);
+
+%%
 function he_plots(y, y_label_str, title_str)
   figure;
 
@@ -227,4 +246,38 @@ figure
             %%saveas(gcf, "./Results/HistEqualization/svg/hist_equalization_COLOR_img_" + int2str(index) + ".svg");
 
   
+end
+
+function br_plots(x_point_num, y_vector, x_label_str, y_label_str, title_str)
+  Y = [];
+  % x_point_num = size(y_vector(1));
+  x_axis = linspace(1, x_point_num, x_point_num);
+  figure 
+
+  % reduction indeces
+  for iterations = 1:10
+
+    % images indeces
+    for i = 1:x_point_num
+      Y(i) = y_vector(1, i, iterations);
+    end
+
+    hold on
+    plot(x_axis, Y, '-o', 'DisplayName', int2str(iterations*10) + "%")
+    xticks(1:1:x_point_num)
+    xlim([1 x_point_num])
+    title(title_str);
+    xlabel(x_label_str);
+    ylabel(y_label_str);
+    lgd = legend;
+    lgd.Title.String = "Brightness Reduction %";
+    % legend(int2str(iterations*10) + "%")
+    hold off
+
+  end
+
+  legend("10%", "20%", "30%", "40%", "50%", "60%", "70%", "80%", "90%", "100%");
+
+  % saveas(gcf, "./Results/ColorReduction/bmp/EnergySavingsPerImage.bmp");
+  % saveas(gcf, "./Results/ColorReduction/svg/EnergySavingsPerImage.svg");
 end
