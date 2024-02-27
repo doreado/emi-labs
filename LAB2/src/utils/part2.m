@@ -29,13 +29,14 @@ end
 original_images = original_images(1:count - 1);
 original_power = original_power(1:count - 1);
 
+%% dvs
 steps = Vdd0;
 scaled_mat = cell([14, steps]);
 power = zeros([14, steps]);
 power_saved_mat = zeros([14, steps]);
 eucl = zeros([14, steps]);
 perc = zeros([14, steps]);
-%% dvs
+
 for k=1:Vdd0
   for i=1:length(original_images)
     scaled_vdd = Vdd0 - k;
@@ -48,11 +49,39 @@ for k=1:Vdd0
   end
 end
 
-%% avg perc
-furry = mean(perc, 1);
-
 %% valori dvs image con comparison
-%%pt.2
-%% brightness o contrast e valori (power saved,consumption,distortion)
+
+%% brightness increase and DVS
+scaled_vdd = 14; % constraint on distortion
+
+steps = 4; % 0 (original ones) 25 50 75 100
+bi_images = cell([14, steps]);
+bi_power = zeros([14, steps]);
+bi_power_saved = zeros([14, steps]);
+bi_eucl = zeros([14, steps]);
+bi_perc = zeros([14, steps]);
+
+for k=1:steps
+  for i=1:length(original_images)
+    bi_image = brightness_increase(original_images{i}, k*25);
+
+    % Vdd scaling
+    I_cell = current_mat(bi_image, scaled_vdd);
+    bi_images{i}{k} = uint8(displayed_image(I_cell, scaled_vdd, 1));
+
+    bi_power(i, k) = power_panel(bi_images{i}{k}, scaled_vdd);
+    bi_power_saved(i, k) = power_saved(original_power(i), bi_power(i, k));
+    [bi_eucl(i, k), bi_perc(i, k)] = distortion(original_images{i}, bi_images{i}{k});
+  end 
+end
+%% TEST
+subplot(1, 3, 1);
+o = brightness_increase(original_images{1}, 1*25);
+imshow(o);
+subplot(1, 3, 2);
+imshow(scaled_mat{1}{1});
+subplot(1, 3, 3);
+imshow(bi_images{1}{1});
+% contrast  
 %% dvs image e valori
 %% comparison tra i valori
