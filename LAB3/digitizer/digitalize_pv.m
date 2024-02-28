@@ -10,7 +10,7 @@ currents = [blue_mpp(1), orange_mpp(1), green_mpp(1), purple_mpp(1)]
 voltages = [blue_mpp(2), orange_mpp(2), green_mpp(2), purple_mpp(2)]
 
 function MPP = mpp(color)
-    p = load(['./to_digitalize/' color '.txt']);
+    p = load(['./to_digitalize/pv/' color '.txt']);
 
     power = p(:, 1) .* p(:, 2);
 
