@@ -75,13 +75,73 @@ for k=1:steps
   end 
 end
 %% TEST
-subplot(1, 3, 1);
-o = brightness_increase(original_images{1}, 1*25);
-imshow(o);
-subplot(1, 3, 2);
-imshow(scaled_mat{1}{1});
-subplot(1, 3, 3);
-imshow(bi_images{1}{1});
-% contrast  
+b = 25; % brightness
+c = 85; % contrast
+i = 14; k = 2;
+scaled_vdd = 10;
+
+scaled_image = dvs(original_images{i}, scaled_vdd);
+
+fprintf("\nOnly DVS\n");
+power = power_panel(scaled_image, scaled_vdd);
+ps = power_saved(original_power(i), power);
+fprintf("Saved Energy: %.2f\n", ps);
+[eucl, perc] = distortion(original_images{i}, scaled_image);
+fprintf("Perc error: %.2f\n", perc);
+
+% Apply b
+bi_image = brightness_increase(original_images{i}, b);
+bi_image = dvs(bi_image, scaled_vdd);
+
+fprintf("\nAfter Brightness Increase\n");
+power = power_panel(bi_image, scaled_vdd);
+ps = power_saved(original_power(i), power);
+fprintf("Saved Energy: %.2f\n", ps);
+[eucl, perc] = distortion(original_images{i},bi_image);
+fprintf("Perc error: %.2f\n", perc);
+
+% Constrast enanchment
+ce_image = contrast_enanchment(original_images{i}, c);
+ce_image = dvs(ce_image, scaled_vdd);
+
+fprintf("\nAfter constrast Increase\n");
+power = power_panel(ce_image, scaled_vdd);
+ps = power_saved(original_power(i), power);
+fprintf("Saved Energy: %.2f\n", ps);
+[eucl, perc] = distortion(original_images{i}, ce_image);
+fprintf("Perc error: %.2f\n", perc);
+
+% Both Constrast and Brightness enanchment
+bc_image = brightness_increase(original_images{i}, b);
+bc_image = contrast_enanchment(bc_image, c);
+bc_image = dvs(bc_image, scaled_vdd);
+
+fprintf("\nAfter brightness and contrast Increase\n");
+power = power_panel(bc_image, scaled_vdd);
+ps = power_saved(original_power(i), power);
+fprintf("Saved Energy: %.2f\n", ps);
+[eucl, perc] = distortion(original_images{i}, bc_image);
+fprintf("Perc error: %.2f\n", perc);
+
+subplot(1, 5, 1);
+imshow(original_images{i});
+title('Original Image');
+
+subplot(1, 5, 2);
+imshow(scaled_image);
+title('Scaled Image');
+
+subplot(1, 5, 3);
+imshow(bi_image);   
+title('Brightness Increase');
+
+subplot(1, 5, 4);
+imshow(ce_image);
+title('Contrast Enanchment');
+
+subplot(1, 5, 5);
+imshow(bc_image);
+title('Brightness and Contrast Increase');
+ 
 %% dvs image e valori
 %% comparison tra i valori
