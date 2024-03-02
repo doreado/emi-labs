@@ -43,10 +43,10 @@ void battery_voc::processing()
     }
 
     // SOC and battery Voc relationship
-    v_oc.write(TO-BE-FILLED); // Place interpolated funct here
+    v_oc.write(2.1066*pow(tmpsoc,3) - 3.0667*pow(tmpsoc,2) + 1.9622*tmpsoc + 3.3070);
 
     // SOC and battery internal resistance relationship
-    r_s.write(TO-BE-FILLED); // Place interpolated funct here
+    r_s.write(3.6530e-05*pow(tmpsoc,3) + 3.3287e-05*pow(tmpsoc,2) - 1.2836e-04*tmpsoc + 1.2626e-04);
 
     // When the battery SOC decreases under 1%, the simulation stops.	
     if(tmpsoc <= 0.01)
@@ -55,5 +55,3 @@ void battery_voc::processing()
         sc_stop();
     }
 }
-
-

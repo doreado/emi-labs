@@ -12,9 +12,6 @@
 #include "temperature_sensor.h"
 #include "mic_click_sensor.h"
 
-//#define 1panel
-#define 2panels
-
 int sc_main(int argc, char* argv[])
 {
     // Instantiate signals
@@ -25,27 +22,37 @@ int sc_main(int argc, char* argv[])
     sca_tdf::sca_signal<double> i_mic_click_sensor; 
     sca_tdf::sca_signal<double> i_mcu;
     sca_tdf::sca_signal<double> i_rf;
-    #ifdef 1panel
+#ifdef P1
     sca_tdf::sca_signal<double> v_pv, i_pv, real_i_pv;
-    #endif;
-     #ifdef 2panels
+#endif;
+#ifdef P2
     sca_tdf::sca_signal<double> v_pv_1, i_pv_1, real_i_pv_1;
     sca_tdf::sca_signal<double> v_pv_2, i_pv_2, real_i_pv_2;
-    #endif;
+#endif;
+#ifdef P3
+    sca_tdf::sca_signal<double> v_pv_1, i_pv_1, real_i_pv_1;
+    sca_tdf::sca_signal<double> v_pv_2, i_pv_2, real_i_pv_2;
+    sca_tdf::sca_signal<double> v_pv_3, i_pv_3, real_i_pv_3;
+#endif;
     sca_tdf::sca_signal<double> i_tot;
 
     // Instantiate modules
     bus bus("bus");
     battery battery("battery");
     converter_battery converter_battery("converter_battery");
-    #ifdef 1panel
+#ifdef P1
     pv_panel pv_panel("pv_panel");
     converter_pv conv_pv("converter_pv");
-    #endif;
-    #ifdef 2panels
+#endif;
+#ifdef P2
     pv_panel pv_panel_1("pv_panel_1"), pv_panel_2("pv_panel_2");
     converter_pv conv_pv_1("converter_pv_1"), conv_pv_2("converter_pv_2");
-    #endif;
+#endif;
+
+#ifdef P3
+    pv_panel pv_panel_1("pv_panel_1"), pv_panel_2("pv_panel_2"), pv_panel_3("pv_panel_3");
+    converter_pv conv_pv_1("converter_pv_1"), conv_pv_2("converter_pv_2"), conv_pv_3("converter_pv_3");
+#endif;
     mcu mcu("mcu");
     rf rf("rf");
     air_quality_sensor air_quality_sensor("air_quality_sensor");
@@ -62,16 +69,16 @@ int sc_main(int argc, char* argv[])
     converter_battery.v_batt(v_batt);
     converter_battery.i_batt(i_batt);
     
-    #ifdef 1panel
+#ifdef P1
     pv_panel.i(i_pv);
     pv_panel.v(v_pv);
     
     conv_pv.i_in(i_pv);
     conv_pv.v_in(v_pv);
     conv_pv.i_out(real_i_pv);
-    #endif
+#endif
 
-    #ifdef 2panels
+#ifdef P2
     pv_panel_1.i(i_pv_1);
     pv_panel_1.v(v_pv_1);
     
@@ -85,8 +92,30 @@ int sc_main(int argc, char* argv[])
     conv_pv_2.i_in(i_pv_2);
     conv_pv_2.v_in(v_pv_2);
     conv_pv_2.i_out(real_i_pv_2);
-    #endif
+#endif
+  
+#ifdef P3
+    pv_panel_1.i(i_pv_1);
+    pv_panel_1.v(v_pv_1);
     
+    conv_pv_1.i_in(i_pv_1);
+    conv_pv_1.v_in(v_pv_1);
+    conv_pv_1.i_out(real_i_pv_1);
+
+    pv_panel_2.i(i_pv_2);
+    pv_panel_2.v(v_pv_2);
+    
+    conv_pv_2.i_in(i_pv_2);
+    conv_pv_2.v_in(v_pv_2);
+    conv_pv_2.i_out(real_i_pv_2);
+
+    pv_panel_3.i(i_pv_3);
+    pv_panel_3.v(v_pv_3);
+    
+    conv_pv_3.i_in(i_pv_3);
+    conv_pv_3.v_in(v_pv_3);
+    conv_pv_3.i_out(real_i_pv_3);
+#endif
     air_quality_sensor.i(i_air_quality_sensor);
     methane_sensor.i(i_methane_sensor);
     temperature_sensor.i(i_temperature_sensor);
@@ -98,13 +127,18 @@ int sc_main(int argc, char* argv[])
 
     bus.i_mcu(i_mcu);
     bus.i_rf(i_rf);
-    #ifdef 1panel
+#ifdef P1
     bus.real_i_pv(real_i_pv);
-    #endif;
-     #ifdef 2panels
-    bus_.real_i_pv_1(real_i_pv_1);
-    bus_.real_i_pv_2(real_i_pv_2);
-    #endif;
+#endif
+#ifdef P2
+    bus.real_i_pv_1(real_i_pv_1);
+    bus.real_i_pv_2(real_i_pv_2);
+#endif
+#ifdef P3
+    bus.real_i_pv_1(real_i_pv_1);
+    bus.real_i_pv_2(real_i_pv_2);
+    bus.real_i_pv_3(real_i_pv_3);
+#endif
     bus.i_tot(i_tot);
     bus.i_air_quality_sensor(i_air_quality_sensor);
     bus.i_methane_sensor(i_methane_sensor);
@@ -119,19 +153,30 @@ int sc_main(int argc, char* argv[])
     sca_util::sca_trace(atf, i_tot, "i_tot" );
     sca_util::sca_trace(atf, i_mcu, "i_mcu" );
     sca_util::sca_trace(atf, i_rf, "i_rf" );
-    #ifdef 1panel
+#ifdef P1
     sca_util::sca_trace(atf, i_pv, "i_pv" );
     sca_util::sca_trace(atf, v_pv, "v_pv" );
     sca_util::sca_trace(atf, real_i_pv, "real_i_pv" );
-    #endif
-    #ifdef 2panels
+  #endif
+#ifdef P2
     sca_util::sca_trace(atf, i_pv_1, "i_pv_1" );
     sca_util::sca_trace(atf, v_pv_1, "v_pv_1" );
     sca_util::sca_trace(atf, real_i_pv_1, "real_i_pv_1" );
     sca_util::sca_trace(atf, i_pv_2, "i_pv_2" );
     sca_util::sca_trace(atf, v_pv_2, "v_pv_2" );
     sca_util::sca_trace(atf, real_i_pv_2, "real_i_pv_2" );
-    #endif
+#endif
+#ifdef P3
+    sca_util::sca_trace(atf, i_pv_1, "i_pv_1" );
+    sca_util::sca_trace(atf, v_pv_1, "v_pv_1" );
+    sca_util::sca_trace(atf, real_i_pv_1, "real_i_pv_1" );
+    sca_util::sca_trace(atf, i_pv_2, "i_pv_2" );
+    sca_util::sca_trace(atf, v_pv_2, "v_pv_2" );
+    sca_util::sca_trace(atf, real_i_pv_2, "real_i_pv_2" );
+    sca_util::sca_trace(atf, i_pv_3, "i_pv_3" );
+    sca_util::sca_trace(atf, v_pv_3, "v_pv_3" );
+    sca_util::sca_trace(atf, real_i_pv_3, "real_i_pv_3" );
+#endif
     sca_util::sca_trace(atf, i_batt, "i_batt" );
     sca_util::sca_trace(atf, v_batt, "v_batt" );
     sca_util::sca_trace(atf, i_air_quality_sensor, "i_air_quality_sensor" );
