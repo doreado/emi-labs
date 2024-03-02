@@ -1,5 +1,7 @@
 #include "bus.h"
 
+//#define 1panel
+#define 2panels
 
 void bus::set_attributes() {}
 
@@ -14,9 +16,12 @@ void bus::processing()
                           + i_temperature_sensor.read()
                           + i_mic_click_sensor.read()
                           ;
-
+    #ifdef 1panel
     double tot_scavenged = real_i_pv.read();
-
+    #endif
+    #ifdef 2panels
+    double tot_scavenged = real_i_pv_1.read() + real_i_pv_2.read();
+    #endif
     double tot_requested = tot_consumed - tot_scavenged;
 
     i_tot.write(tot_requested); // tot_requested >= 0 ? pow_from_battery : pow_to_battery
