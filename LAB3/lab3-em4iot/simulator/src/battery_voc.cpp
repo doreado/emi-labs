@@ -15,6 +15,7 @@ void battery_voc::initialize() {}
 void battery_voc::processing()
 {
     double tmpcurrent; // Battery current, if negative, the battery is charged 
+    unsigned int c_nom;
     
     // Read input current
     tmpcurrent = i.read(); // Battery current, if negative, the battery is charged 
@@ -23,7 +24,7 @@ void battery_voc::processing()
     Compute actual state-of-charge solving the integral:
     SOC_t = SOC_{t-1} - \int^{t}_{-inf} i(\tau) / C d\tau
     */
-    c_nom = TO-BE-FILLED
+    c_nom = 3600;
     tmpsoc -= (((tmpcurrent + prev_i_batt) * SIM_STEP) / (2 * 3600 * c_nom)); // 3600 * Cnom, mAh to mAs cause [sim step] = [s]
     prev_i_batt = tmpcurrent; // Update
 
@@ -54,3 +55,5 @@ void battery_voc::processing()
         sc_stop();
     }
 }
+
+
