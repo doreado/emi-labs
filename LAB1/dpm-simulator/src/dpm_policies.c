@@ -130,21 +130,22 @@ getchar();
     }
     free(work_queue);
 
-    printf("%.6lf,%.6lf,%.6lf,%.6lf,%.6lf,%.6lf,%.6lf,%.6lf,%d,%.6lf,%.10f,%.10f,%.10f\n",
-           t_active_ideal * PSM_TIME_UNIT,    // active
-           t_inactive_ideal * PSM_TIME_UNIT,  // inactive
-           t_state[0] * PSM_TIME_UNIT,        // run time 
-           t_state[1] * PSM_TIME_UNIT,        // idle time
-           t_state[2] * PSM_TIME_UNIT,        // sleep time 
-           t_waiting * PSM_TIME_UNIT,         // timeout waiting time
-           t_curr * PSM_TIME_UNIT,            // total time
-           t_total_no_dpm * PSM_TIME_UNIT,    // total time no dpm
-           n_tran_total,                      // number of transitions
-           t_tran_total * PSM_TIME_UNIT,      // transitions time
-           e_tran_total * PSM_ENERGY_UNIT,    // transitions energy
-           e_total * PSM_ENERGY_UNIT,         // total energy
-           e_total_no_dpm * PSM_ENERGY_UNIT   // total energy no dpm
-    );
+    printf("%.6lf, %.10f\n",  (t_total_no_dpm - t_curr) / t_total_no_dpm * 100, (e_total_no_dpm - e_total) / e_total_no_dpm * 100);
+    // printf("%.6lf,%.6lf,%.6lf,%.6lf,%.6lf,%.6lf,%.6lf,%.6lf,%d,%.6lf,%.10f,%.10f,%.10f\n",
+    //        t_active_ideal * PSM_TIME_UNIT,    // active
+    //        t_inactive_ideal * PSM_TIME_UNIT,  // inactive
+    //        t_state[0] * PSM_TIME_UNIT,        // run time 
+    //        t_state[1] * PSM_TIME_UNIT,        // idle time
+    //        t_state[2] * PSM_TIME_UNIT,        // sleep time 
+    //        t_waiting * PSM_TIME_UNIT,         // timeout waiting time
+    //        t_curr * PSM_TIME_UNIT,            // total time
+    //        t_total_no_dpm * PSM_TIME_UNIT,    // total time no dpm
+    //        n_tran_total,                      // number of transitions
+    //        t_tran_total * PSM_TIME_UNIT,      // transitions time
+    //        e_tran_total * PSM_ENERGY_UNIT,    // transitions energy
+    //        e_total * PSM_ENERGY_UNIT,         // total energy
+    //        e_total_no_dpm * PSM_ENERGY_UNIT   // total energy no dpm
+    // );
 
   return 1;
 }
